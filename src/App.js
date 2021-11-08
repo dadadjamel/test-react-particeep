@@ -13,19 +13,37 @@ function App() {
 
   const [movies, setMovies] = useState({})
   const [isloading, setIsloading] = useState(true)
-  const [numberOfItemInPage, setNumberOfItemInPage] = useState(4)
+  const [numberOfItemInPage, setNumberOfItemInPage] = useState(12)
   const [pages] = useState(Math.round(movies.length / numberOfItemInPage));
   const [currentPage, setCurrentPage] = useState(1)
+  const [categoryTable, setCategoryTable] = useState([{value:'ff',label:'ffss'},{value:'ffaa',label:'ffssaa'}])
+
+
+
+
   useState(() => {
     // setIsloading(true)
     movies$.then(movie => {
       setMovies(movie)
     });
     // setIsloading(false)
-  }, [])
+  }, [movies])
 
-  // useState(() => {
-  // }, [movies])
+
+  // setCategoryTable(movie => categoryTable.includes(movie.category) ? [...categoryTable, movie.category] : { ...categoryTable })
+
+  const getCategoryFilter = () => {
+    
+    if (movies.length != 0) {
+      setCategoryTable([{value:'Thriller',label:'Thriller'},{value:'ffaa',label:'azertrezy'}])      
+    }
+
+    
+  }
+
+  useState(() => {
+    getCategoryFilter()
+  }, [movies])
 
 
 
@@ -53,19 +71,22 @@ function App() {
   }
 
 
-
   return (
     <div className="App">
+      {/* {console.log((movies), '🍿🍿🍿🍿')} */}
+      {/* {getCategoryFilter()} */}
       <Select
         mode="multiple"
         allowClear
         style={{ width: '100%' }}
         placeholder="Please select"
-        defaultValue={['a10', 'c12']}
       >
-        <Option value="red">Red</Option>
-        <Option value="green">Green</Option>
-        <Option value="blue">Blue</Option>
+
+        {categoryTable.length != 0 ? categoryTable?.map((cat,index) => (
+          <Option key={index} value={cat.value}>{cat.label}</Option>
+        )) : console.log('❌❌❌')}
+          {/* <Option value="{cat}">"cat"</Option> */}
+
       </Select>
 
 
@@ -77,7 +98,7 @@ function App() {
 
 
       <div>
-        <Button onClick={() => setNumberOfItemInPage(4)} >4</Button>
+        <Button onClick={() => { setNumberOfItemInPage(4) }} >4</Button>
         <Button onClick={() => setNumberOfItemInPage(8)} >8</Button>
         <Button onClick={() => setNumberOfItemInPage(12)} >12</Button>
       </div>
