@@ -3,8 +3,11 @@ import './App.css';
 import Movie from './components/movie/Movie';
 import { useState } from 'react';
 import { movies$ } from './api/movies';
-import { Button, Progress, Spin } from 'antd';
+import { Button, Progress, Spin, Select } from 'antd';
 
+
+
+const { Option } = Select;
 function App() {
   // {Promise.all([movies]).then(data=>{console.log(data)})}
 
@@ -21,8 +24,8 @@ function App() {
     // setIsloading(false)
   }, [])
 
-  useState(() => {
-  }, [movies])
+  // useState(() => {
+  // }, [movies])
 
 
 
@@ -40,9 +43,9 @@ function App() {
     setMovies(movies.map(movie => {
       if (movie?.id == id) {
         if (movie?.likedalready == false) {
-          return { ...movie, likes: movie.likes + 1, test: 'da' }
-        } else {
           return { ...movie, likes: movie.likes - 1, likedalready: true }
+        } else {
+          return { ...movie, likes: movie.likes + 1, likedalready: false }
         }
       } else return movie
     }))
@@ -53,6 +56,17 @@ function App() {
 
   return (
     <div className="App">
+      <Select
+        mode="multiple"
+        allowClear
+        style={{ width: '100%' }}
+        placeholder="Please select"
+        defaultValue={['a10', 'c12']}
+      >
+        <Option value="red">Red</Option>
+        <Option value="green">Green</Option>
+        <Option value="blue">Blue</Option>
+      </Select>
 
 
       {!movies.length == 0 ? <div className='movies' >
@@ -63,15 +77,15 @@ function App() {
 
 
       <div>
-        <Button onClick={()=>setNumberOfItemInPage(4)} >4</Button>
-        <Button onClick={()=>setNumberOfItemInPage(8)} >8</Button>
-        <Button onClick={()=>setNumberOfItemInPage(12)} >12</Button>
+        <Button onClick={() => setNumberOfItemInPage(4)} >4</Button>
+        <Button onClick={() => setNumberOfItemInPage(8)} >8</Button>
+        <Button onClick={() => setNumberOfItemInPage(12)} >12</Button>
       </div>
 
 
       <div>
-        <Button onClick={()=>setCurrentPage(currentPage=>currentPage-1)} disabled={currentPage==1} >Back</Button>
-        <Button onClick={()=>setCurrentPage(currentPage=>currentPage+1)} disabled={currentPage==Math.ceil(movies.length / numberOfItemInPage)}>Next</Button>
+        <Button onClick={() => setCurrentPage(currentPage => currentPage - 1)} disabled={currentPage == 1} >Back</Button>
+        <Button onClick={() => setCurrentPage(currentPage => currentPage + 1)} disabled={currentPage == Math.ceil(movies.length / numberOfItemInPage)}>Next</Button>
       </div>
 
 
