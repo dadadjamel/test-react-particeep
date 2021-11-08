@@ -1,0 +1,16 @@
+.movie{
+   /* border: 1px solid black;  */
+   display: flex;
+   flex-direction: column;
+   justify-content: start;
+   align-items: flex-start;
+   width: 200px;
+   /* height: 150px; */
+   margin: 15px 20px;
+   padding: 10px;
+   box-shadow: 0 0px 15px 1px lightgray
+}
+
+.movie__delete__button{
+    
+}
