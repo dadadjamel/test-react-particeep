@@ -4,6 +4,8 @@ import Movie from './components/movie/Movie';
 import { useState } from 'react';
 import { movies$ } from './api/movies';
 import { Button, Progress, Spin, Select } from 'antd';
+// import useState from 'react-usestateref'
+
 
 
 
@@ -11,7 +13,7 @@ const { Option } = Select;
 function App() {
   // {Promise.all([movies]).then(data=>{console.log(data)})}
 
-  const [movies, setMovies] = useState({})
+  let [movies, setMovies] = useState({})
   const [isloading, setIsloading] = useState(true)
   const [numberOfItemInPage, setNumberOfItemInPage] = useState(12)
   const [pages] = useState(Math.round(movies.length / numberOfItemInPage));
@@ -20,14 +22,14 @@ function App() {
 
 
 
-
   useState(() => {
     // setIsloading(true)
     movies$.then(movie => {
       setMovies(movie)
     });
+    console.log(movies,'😎😎😎');
     // setIsloading(false)
-  }, [movies])
+  }, [])
 
 
   // setCategoryTable(movie => categoryTable.includes(movie.category) ? [...categoryTable, movie.category] : { ...categoryTable })
@@ -35,8 +37,10 @@ function App() {
   const getCategoryFilter = () => {
     
     if (movies.length != 0) {
-      setCategoryTable([{value:'Thriller',label:'Thriller'},{value:'ffaa',label:'azertrezy'}])      
+      // setCategoryTable([{value:'Thriller',label:'Thriller'},{value:'Comedy',label:'Comedy'}])      
+      setCategoryTable(['Thriller','Comedy'])      
     }
+    console.log(movies,'😍😍😍')
 
     
   }
@@ -83,7 +87,7 @@ function App() {
       >
 
         {categoryTable.length != 0 ? categoryTable?.map((cat,index) => (
-          <Option key={index} value={cat.value}>{cat.label}</Option>
+          <Option key={index} value={cat}>{cat}</Option>
         )) : console.log('❌❌❌')}
           {/* <Option value="{cat}">"cat"</Option> */}
 
@@ -91,9 +95,16 @@ function App() {
 
 
       {!movies.length == 0 ? <div className='movies' >
-        {movies.slice(currentPage * numberOfItemInPage - numberOfItemInPage, currentPage * numberOfItemInPage).map((movie, index) => (
-          <Movie key={index} movie={movie} handleDelete={handleDelete} handleLikeDislike={handleLikeDislike} />
-        ))}
+        {movies.slice(currentPage * numberOfItemInPage - numberOfItemInPage, currentPage * numberOfItemInPage).map((movie, index) => {
+          if (categoryTable.length == 0) {
+            return (<Movie key={index} movie={movie} handleDelete={handleDelete} handleLikeDislike={handleLikeDislike} />)
+          } else {
+            if (categoryTable.includes(movie.category)) {
+              return (<Movie key={index} movie={movie} handleDelete={handleDelete} handleLikeDislike={handleLikeDislike} />)
+            }
+          }
+          
+        })}
       </div> : <div><Spin size="large" /></div>}
 
 
