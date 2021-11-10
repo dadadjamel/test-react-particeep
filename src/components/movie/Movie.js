@@ -9,7 +9,7 @@ import { getMovies } from "../../redux/actions/movies";
 // options of all cases
 const options = [
     { label: 'Like', value: 'like' },
-    { label: '/', value: 'Nothing' },
+    // { label: '/', value: 'Nothing' },
     { label: 'Dislike', value: 'Dislike' },
 ];
 const Movie = ({ movie, handleDelete }) => {
@@ -109,20 +109,6 @@ const Movie = ({ movie, handleDelete }) => {
         }
         dispatch(getMovies(newmovies))
     }
-
-    // const handleLikeDislike = (id) => {
-    //     setMovies(movies.map(movie => movie.id == id ? {...movie,likes:movie.likes+1} : movie))
-    //     setMovies(movies.map(movie => {
-    //         if (movie?.id == id) {
-    //             if (movie?.likedalready == false) {
-    //                 return { ...movie, likes: movie.likes - 1, likedalready: true }
-    //             } else {
-    //                 return { ...movie, likes: movie.likes + 1, likedalready: false }
-    //             }
-    //         } else return movie
-    //     }))
-    //     console.log('number is liked/disliked', id)
-    // }
 
 
 

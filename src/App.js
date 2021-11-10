@@ -89,7 +89,7 @@ function App() {
 
         {categoryTable.length != 0 ? categoryTable?.map((cat, index) => (
           <Option key={index} value={cat}>{cat}</Option>
-        )) : console.log('❌❌❌')}
+        )) : <div></div>}
       </Select>
 
 
