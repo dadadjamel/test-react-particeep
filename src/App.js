@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import Movie from './components/movie/Movie';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { movies$ } from './api/movies';
 import { Button, Progress, Spin, Select } from 'antd';
 // import useState from 'react-usestateref'
@@ -13,22 +13,28 @@ const { Option } = Select;
 function App() {
   // {Promise.all([movies]).then(data=>{console.log(data)})}
 
-  let [movies, setMovies] = useState({})
+  const [movies, setMovies] = useState([])
+  const [moviesLoaded, setLoaded] = useState(false)
   const [isloading, setIsloading] = useState(true)
   const [numberOfItemInPage, setNumberOfItemInPage] = useState(12)
   const [pages] = useState(Math.round(movies.length / numberOfItemInPage));
   const [currentPage, setCurrentPage] = useState(1)
-  const [categoryTable, setCategoryTable] = useState([{ value: 'ff', label: 'ffss' }, { value: 'ffaa', label: 'ffssaa' }])
+  const [categoryTable, setCategoryTable] = useState([])
+  const [selctedcategoryTable, setselctedCategoryTable] = useState([])
 
 
   const getAllMovies = () => {
-    movies$.then(movie => {
-      setMovies(movie)
+    movies$.then(movieList => {
+      console.log("we will put movies in stte");
+      console.log(movieList);
+      setMovies(movieList)
+      setLoaded(true)
     });
   }
 
-  useState(() => {
+  useEffect(() => {
     // setIsloading(true)
+    console.log("we will get movies");
     getAllMovies()
 
     console.log(movies, '😎😎😎');
@@ -36,20 +42,31 @@ function App() {
   }, [])
 
 
-  // setCategoryTable(movie => categoryTable.includes(movie.category) ? [...categoryTable, movie.category] : { ...categoryTable })
+     
 
   const getCategoryFilter = () => {
-
-    if (movies.length != 0) {
-      // setCategoryTable([{value:'Thriller',label:'Thriller'},{value:'Comedy',label:'Comedy'}])      
-      setCategoryTable([])
+    
+    console.log(movies, "hehehehehehe");
+    if (movies?.length != 0) {
+      let list = []
+      movies?.map(movie=>{
+        if (!list.includes(movie.category)){
+          list.push(movie.category);
+        }
+        })
+        setCategoryTable(list)
+      // return setCategoryTable(categoryTable.includes(movie.category) ? categoryTable : categoryTable.push(movie.category))
     }
-    console.log(movies, '😍😍😍')
+    console.log(categoryTable, "hogohohohoh");
   }
 
-  useState(() => {
+
+   useEffect(() => {
+    console.log("we will get category");
     getCategoryFilter()
-  }, [movies])
+   }, [movies])
+
+  
 
 
 
@@ -60,6 +77,10 @@ function App() {
   const handleDelete = (id) => {
     setMovies(movies.filter(movie => movie.id != id))
     console.log('number is deleted', id)
+  }
+
+  const handlechangeCategories = (v) => {
+    setselctedCategoryTable(v)
   }
 
  
@@ -74,6 +95,7 @@ function App() {
         allowClear
         style={{ width: '100%' }}
         placeholder="Please select"
+        onChange={(v)=>handlechangeCategories(v)}
       >
 
         {categoryTable.length != 0 ? categoryTable?.map((cat, index) => (
@@ -86,10 +108,10 @@ function App() {
 
       {!movies.length == 0 ? <div className='movies' >
         {movies.slice(currentPage * numberOfItemInPage - numberOfItemInPage, currentPage * numberOfItemInPage).map((movie, index) => {
-          if (categoryTable.length == 0) {
+          if (selctedcategoryTable.length == 0) {
             return (<Movie key={index} movie={movie} handleDelete={handleDelete}  />)
           } else {
-            if (categoryTable.includes(movie.category)) {
+            if (selctedcategoryTable.includes(movie.category)) {
               return (<Movie key={index} movie={movie} handleDelete={handleDelete} />)
             }
           }
