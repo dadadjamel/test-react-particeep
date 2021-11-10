@@ -5,3 +5,14 @@
     /* margin: 15px 10px; */
     padding: 15px 10px;
 }
+
+.App{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.app__button__pages, .app__button__pages__number{
+    margin: 10px 0;
+}

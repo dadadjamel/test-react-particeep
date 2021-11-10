@@ -6,57 +6,42 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getMovies } from './redux/actions/movies';
 import { movies$ } from './api/movies';
 import { Button, Progress, Spin, Select } from 'antd';
-// import useState from 'react-usestateref'
 
 
 
 
 const { Option } = Select;
 function App() {
-  // {Promise.all([movies]).then(data=>{console.log(data)})}
   const dispatch = useDispatch();
-  const newmovies = useSelector(state => state.movies.movies);
+  const newmovies = useSelector(state => state.movies.movies);  // movies from redux stae
+  const [movies, setMovies] = useState([]) // state of movies from movies.js
+  const [numberOfItemInPage, setNumberOfItemInPage] = useState(12) // to switch between 12 8 4
+  const [currentPage, setCurrentPage] = useState(1) // keep track of the current page
+  const [categoryTable, setCategoryTable] = useState([]) // get all categories from the movies
+  const [selctedcategoryTable, setselctedCategoryTable] = useState([]) // keep track of the selected categories
 
-  const [movies, setMovies] = useState([])
-  const [moviesLoaded, setLoaded] = useState(false)
-  const [isloading, setIsloading] = useState(true)
-  const [numberOfItemInPage, setNumberOfItemInPage] = useState(12)
-  const [pages] = useState(Math.round(movies.length / numberOfItemInPage));
-  const [currentPage, setCurrentPage] = useState(1)
-  const [categoryTable, setCategoryTable] = useState([])
-  const [selctedcategoryTable, setselctedCategoryTable] = useState([])
-
-
+  // method 1 : get all movies from movies.js
   const getAllMovies = () => {
     movies$.then(movieList => {
-      console.log("we will put movies in stte");
-      console.log(movieList);
       setMovies(movieList)
-      setLoaded(true)
-      console.log(movies,'🥰🥰🥰🥰🥰');
     });
   }
 
   useEffect(() => {
-    // setIsloading(true)
-    console.log("we will get movies");
+    // method 1
     getAllMovies()
+
+    // method 2 : using redux
     movies$.then(movieList => {
       dispatch(getMovies(movieList));
     });
-
-    
-
-    console.log(movies, '😎😎😎');
-    // setIsloading(false)
   }, [])
 
 
 
 
   const getCategoryFilter = () => {
-
-    console.log(movies, "hehehehehehe");
+    // get all categories of all movies
     if (movies?.length != 0) {
       let list = []
       movies?.map(movie => {
@@ -65,32 +50,26 @@ function App() {
         }
       })
       setCategoryTable(list)
-      // return setCategoryTable(categoryTable.includes(movie.category) ? categoryTable : categoryTable.push(movie.category))
     }
-    console.log(categoryTable, "hogohohohoh");
   }
 
 
   useEffect(() => {
-    console.log("we will get category");
+    // get the categories each time something is changed in movies list
     getCategoryFilter()
-  }, [movies])
+  }, [newmovies])
 
-
-
-
-
-  // movies$.then(movie => {
-  //   setMovies(movie)
-  // });
-
+  // delete one item by id
   const handleDelete = (id) => {
+    // method 1
     setMovies(movies.filter(movie => movie.id != id))
     
+
+    // method 2 : using redux
     dispatch(getMovies(newmovies.filter(movie => movie.id != id)))
-    console.log('number is deleted', id)
   }
 
+  // keep track of changes in Select input
   const handlechangeCategories = (v) => {
     setselctedCategoryTable(v)
   }
@@ -100,8 +79,6 @@ function App() {
 
   return (
     <div className="App">
-      {/* {console.log((movies), '🍿🍿🍿🍿')} */}
-      {/* {getCategoryFilter()} */}
       <Select
         mode="multiple"
         allowClear
@@ -113,12 +90,11 @@ function App() {
         {categoryTable.length != 0 ? categoryTable?.map((cat, index) => (
           <Option key={index} value={cat}>{cat}</Option>
         )) : console.log('❌❌❌')}
-        {/* <Option value="{cat}">"cat"</Option> */}
-
       </Select>
 
 
       {!newmovies.length == 0 ? <div className='movies' >
+        {/* slice is used to just show movies based on page number and numbers of movies per page */}
         {newmovies.slice(currentPage * numberOfItemInPage - numberOfItemInPage, currentPage * numberOfItemInPage).map((movie, index) => {
           if (selctedcategoryTable.length == 0) {
             return (<Movie key={index} movie={movie} handleDelete={handleDelete} />)
@@ -131,14 +107,14 @@ function App() {
       </div> : <div><Spin size="large" /></div>}
 
 
-      <div>
+      <div className='app__button__pages' >
         <Button onClick={() => { setNumberOfItemInPage(4) }} >4</Button>
         <Button onClick={() => setNumberOfItemInPage(8)} >8</Button>
         <Button onClick={() => setNumberOfItemInPage(12)} >12</Button>
       </div>
 
 
-      <div>
+      <div className='app__button__pages__number' >
         <Button onClick={() => setCurrentPage(currentPage => currentPage - 1)} disabled={currentPage == 1} >Back</Button>
         <Button onClick={() => setCurrentPage(currentPage => currentPage + 1)} disabled={currentPage == Math.ceil(movies.length / numberOfItemInPage)}>Next</Button>
       </div>
